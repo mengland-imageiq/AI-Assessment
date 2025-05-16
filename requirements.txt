@@ -1,0 +1,7 @@
+# from your local clone
+echo "flask"             >> requirements.txt
+echo "azure-functions"   >> requirements.txt
+# …or whatever you actually use
+git add requirements.txt
+git commit -m "chore: add requirements.txt"
+git push origin main
