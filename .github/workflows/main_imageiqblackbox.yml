@@ -1,39 +1,39 @@
-name: Build & deploy Python to Azure Web App
+name: Build & Deploy Python to Azure Web App
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
-
-env:
-  AZURE_WEBAPP_NAME: imageiqblackbox-ghama7f0a7bqehgg   # your actual app service name
-  AZURE_WEBAPP_PACKAGE_PATH: '.'                       # root of your repo
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      # 1) Check out your code
+      - uses: actions/checkout@v4
 
+      # 2) Install and set up Python 3.10
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # 3) Install your pip dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Archive app for deployment
-        run: |
-          zip -r app.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      # 4) Zip everything up
+      - name: Archive application files
+        run: zip -r app.zip .
 
+      # 5) Push the zip up to Azure
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: imageiqblackbox               # <— your Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
